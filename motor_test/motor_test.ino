@@ -13,7 +13,7 @@ int buttonState = 0;
 //const int buttonPin = 4;
 
 // motor controller needs 2 inputs, IN1 and IN2
-// PWM and STBY are pull to high
+// PWM and STBY are pulled to high
 const int in1Pin = 4;
 const int in2Pin = 5;
 

@@ -14,29 +14,39 @@ int buttonState = 0;
 
 // motor controller needs 2 inputs, IN1 and IN2
 // PWM and STBY are pulled to high
-const int in1Pin = 4;
-const int in2Pin = 5;
+const int Ain1Pin = 4;
+const int Ain2Pin = 5;
+const int Bin1Pin = 18;
+const int Bin2Pin = 19;
 
 void setup() {
  Serial.begin(115200);
 
   //pinMode(buttonPin, INPUT);
 
-  pinMode(in1Pin, OUTPUT);
-  pinMode(in2Pin, OUTPUT);
+  pinMode(Ain1Pin, OUTPUT);
+  pinMode(Ain2Pin, OUTPUT);
+  pinMode(Bin1Pin, OUTPUT);
+  pinMode(Bin2Pin, OUTPUT);
 }
 
 void loop() {
   //buttonState = digitalRead(buttonPin);
- // Serial.println(buttonState);
-Serial.println("forward");
-    digitalWrite(in1Pin, HIGH);
-    digitalWrite(in2Pin, LOW);
-  // I know this is funky it's just for testing
+  // Serial.println(buttonState);
+  Serial.println("forward");
+  
+  digitalWrite(Ain1Pin, HIGH);
+  digitalWrite(Ain2Pin, LOW);
+  digitalWrite(Bin1Pin, HIGH);
+  digitalWrite(Bin2Pin, LOW);
+  // I know delay() is funky, it's just for testing
   delay(2000);
+  
   Serial.println("backward");
-    digitalWrite(in1Pin, LOW);
-    digitalWrite(in2Pin, HIGH);
+  digitalWrite(Ain1Pin, LOW);
+  digitalWrite(Ain2Pin, HIGH);
+  digitalWrite(Bin1Pin, LOW);
+  digitalWrite(Bin2Pin, HIGH);
   delay(2000);
 
 //  if(buttonState == HIGH) {

@@ -10,12 +10,15 @@ Connect:
 * ESP GND - Ground
 * ESP D4 - TB6612 AIN1
 * ESP D5 - TB6612 AIN2
- 
-* TB6612 PWMA - Power (3V)
-* TB6612 STBY - Power (3V)
-* TB6612 GND - Ground (necessary?)
-* TB6612 MOT A - Motor Positive
+* ESP D18 - TB6612 BIN1
+* ESP D19 - TB6612 BIN2
 
-* Motor Negative - Ground 
+* TB6612 VM - Power (later 5V) 
+* TB6612 PWMA - Power (3V)
+* TB6612 PWMB - Power (3V)
+* TB6612 STBY - Power (3V)
+* TB6612 GND - Ground 
+* TB6612 MOT A - Motor Positive
+* TB6612 MOT A - Motor Negative 
 
 

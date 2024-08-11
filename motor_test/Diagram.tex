@@ -1,0 +1,83 @@
+\documentclass{article}
+
+\usepackage[siunitx]{circuitikz}
+\usepackage{geometry}
+\geometry{letterpaper, landscape, margin=1cm}
+
+\begin{document}
+
+\begin{circuitikz}
+	[pin/.style={rectangle, draw, inner sep=0pt, minimum height=1cm, minimum width=0.5cm}]
+
+	% Draw a grid
+	%\clip(0,-10) rectangle (15,10);
+	\draw[step=1cm,gray,ultra thin] (0,-10) grid (20,10);
+	\draw (0,0) circle [radius=10pt];
+		
+	% Body of the ESP32
+	\node at (8,7) [rectangle, thick, draw, minimum width=16cm, minimum height=3cm]  {};
+	\node at (1,7) [font=\bf]{ESP32};
+	
+	% ESP32 Pins
+	\node (D19) at (8,6) [pin] {D19} +(1,.5);
+	\node (D18) at (7,6) [pin] {D18} +(1,.5);
+	\node (D5) at (6,6) [pin] {D5} +(1,.5);
+	\node (D4) at (4,6) [pin] {D4} +(1,.5);
+	\node (GNDESP) at (2,6) [pin]{GND} +(1,.5);
+	\node (3V3) at (1,6) [pin] {3V3} ;
+
+	% Body of the TB6612
+	\node at (10.5,0) [rectangle, thick, draw, minimum width=11cm, minimum height=5cm]  {};
+	\node at (10,0) [font=\bf]{TB6612};
+			
+	% TB6612 Pins
+	\node (PWMA) at (6,2) [pin] {} +(1,.5);
+	\node at (6,1) {PWMA};
+	\node (AIN2) at (7,2) [pin] {AIN2} +(1,.5);
+	\node (AIN1) at (8,2) [pin] {AIN1} +(1,.5);	
+	\node (STBY) at (9,2) [pin] {STBY} +(1,.5);	
+	\node (BIN1) at (10,2) [pin] {BIN1} +(1,.5);	
+	\node (BIN2) at (11,2) [pin] {BIN2} +(1,.5);	
+	\node (PWMB) at (12,2) [pin] {} +(1,.5);	
+	\node at (12,1) {PWMB};
+	\node (GNDTB_TOP) at (13,2) [pin] {GND} +(1,.5);	
+	\node (VCC) at (14,2) [pin] {VCC} +(1,.5);		
+	\node (VM) at (15,2) [pin] {VM} +(1,.5);
+	
+	\node (MOTORA1) at (8,-2) [pin] {} +(1,.5);	
+	\node (MOTORA2) at (9,-2) [pin] {} +(1,.5);	
+	\node at (8.5,-1) {MOTORA};
+	\node (GNDTB_BOT1) at (10,-2) [pin] {} +(1,.5);		
+	\node (GNDTB_BOT2) at (11,-2) [pin] {} +(1,.5);	
+	\node at (10.5,-1) {GND};
+	\node (MOTORB1) at (12,-2) [pin] {} +(1,.5);	
+	\node (MOTORB2) at (13,-2) [pin] {} +(1,.5);	
+	\node at (12.5,-1) {MOTORB};
+
+	\draw (GNDESP.south) -- ++(0,-10) -- ++ (0,-1) node(GROUND)[ground]{};
+	
+% draw the button circuits
+%	\draw (VIN.east)  to[short,-*] ++(1,0)
+%		to[normally open push button, draw, color=red] ++(0,-6)
+%		to[short]  +(0, -1)
+%		to[short]  (D25.east);  
+%	 \draw (3.5,0)  to[R=10<\kilo \ohm>,*-*] +(9,0); 
+	  
+%	\draw (VIN.east)  to[short] ++(2,0)
+%		to[normally open push button, draw, color=green] ++(0,-6)
+%		to[short]  +(0, -3)
+%		to[short]  (D32.east);  
+%	 \draw (4.5,-2)  to[R=10<\kilo \ohm>,*-*] +(8,0); 
+
+% draw the LED circuits
+%	\draw (D26.east)  to[leDo, color=red] ++(8,0) 
+%		   to [R=\SI{220}{\ohm}]   ++(1,0)
+%		   	  to[short, -*]  ++(1,0);
+		 
+%	\draw (D33.east)  to[leDo, color=green] ++(8,0) 
+%		   to [R=\SI{220}{\ohm}]   ++(1,0)
+%		  to[short, -*]  ++(1,0);
+
+\end{circuitikz}
+
+\end{document}

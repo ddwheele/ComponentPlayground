@@ -12,6 +12,8 @@ Connect:
 * ESP D5 - TB6612 AIN2
 * ESP D18 - TB6612 BIN1
 * ESP D19 - TB6612 BIN2
+* ESP VP (GPIO36) - Button low - 10K Ohm -> Ground
+* Button high - Power (3V)
 
 * TB6612 VM - Power (later 5V) 
 * TB6612 PWMA - Power (3V)

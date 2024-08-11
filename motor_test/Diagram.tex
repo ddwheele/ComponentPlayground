@@ -16,15 +16,22 @@
 		
 	% Body of the ESP32
 	\node at (8,7) [rectangle, thick, draw, minimum width=16cm, minimum height=3cm]  {};
-	\node at (1,7) [font=\bf]{ESP32};
+	\node at (1,8) [font=\bf]{ESP32};
 	
 	% ESP32 Pins
-	\node (D19) at (8,6) [pin] {D19} +(1,.5);
-	\node (D18) at (7,6) [pin] {D18} +(1,.5);
-	\node (D5) at (6,6) [pin] {D5} +(1,.5);
-	\node (D4) at (4,6) [pin] {D4} +(1,.5);
-	\node (GNDESP) at (2,6) [pin]{GND} +(1,.5);
-	\node (3V3) at (1,6) [pin] {3V3} ;
+	\node (3V3) at (1,6) [pin] {} ;
+	\node at (1,7) {3V3};
+	\node (GNDESP) at (2,6) [pin]{} +(1,.5);
+	\node at (2,7) {GND};
+	\node (D4) at (4,6) [pin] {} +(1,.5);	
+	\node at (4,7) {D4};
+	\node (D5) at (6,6) [pin] {} +(1,.5);
+	\node at (6,7) {D5};
+	\node (D18) at (7,6) [pin] {} +(1,.5);
+	\node at (7,7) {D18};
+	\node (D19) at (8,6) [pin] {} +(1,.5);
+	\node at (8,7) {D19};
+
 
 	% Body of the TB6612
 	\node at (10.5,0) [rectangle, thick, draw, minimum width=11cm, minimum height=5cm]  {};
@@ -32,17 +39,25 @@
 			
 	% TB6612 Pins
 	\node (PWMA) at (6,2) [pin] {} +(1,.5);
-	\node at (6,1) {PWMA};
-	\node (AIN2) at (7,2) [pin] {AIN2} +(1,.5);
-	\node (AIN1) at (8,2) [pin] {AIN1} +(1,.5);	
-	\node (STBY) at (9,2) [pin] {STBY} +(1,.5);	
-	\node (BIN1) at (10,2) [pin] {BIN1} +(1,.5);	
-	\node (BIN2) at (11,2) [pin] {BIN2} +(1,.5);	
-	\node (PWMB) at (12,2) [pin] {} +(1,.5);	
-	\node at (12,1) {PWMB};
-	\node (GNDTB_TOP) at (13,2) [pin] {GND} +(1,.5);	
-	\node (VCC) at (14,2) [pin] {VCC} +(1,.5);		
-	\node (VM) at (15,2) [pin] {VM} +(1,.5);
+	\node at (6,0.5) {PWMA};
+	\node (AIN2) at (7,2) [pin] {} +(1,.5);
+	\node at (7,1) {AIN2};
+	\node (AIN1) at (8,2) [pin] {} +(1,.5);
+	\node at (8,1) {AIN1};
+	\node (STBY) at (9,2) [pin] {} +(1,.5);
+	\node at (9,1) {STBY};	
+	\node (BIN1) at (10,2) [pin] {} +(1,.5);	
+	\node at (10,1) {BIN1};
+	\node (BIN2) at (11,2) [pin] {} +(1,.5);	
+	\node at (11,1) {BIN2};
+	\node (PWMB) at (12,2) [pin] {} +(1,.5);
+	\node at (12,0.5) {PWMB};
+	\node (GNDTB_TOP) at (13,2) [pin] {} +(1,.5);
+	\node at (13,1) {GND};
+	\node (VCC) at (14,2) [pin] {} +(1,.5);	
+	\node at (14,1) {VCC};
+	\node (VM) at (15,2) [pin] {} +(1,.5);
+	\node at (15,1) {VM};
 	
 	\node (MOTORA1) at (8,-2) [pin] {} +(1,.5);	
 	\node (MOTORA2) at (9,-2) [pin] {} +(1,.5);	

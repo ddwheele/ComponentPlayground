@@ -15,23 +15,24 @@
 	\draw (0,0) circle [radius=10pt];
 		
 	% Body of the ESP32
-	\node at (8,7) [rectangle, thick, draw, minimum width=16cm, minimum height=3cm]  {};
-	\node at (1,8) [font=\bf]{ESP32};
+	\node at (8,7.5) [rectangle, thick, draw, minimum width=16cm, minimum height=4cm]  {};
+	\node at (8,7.5) [font=\bf]{ESP32};
 	
 	% ESP32 Pins
 	\node (3V3) at (1,6) [pin] {} ;
 	\node at (1,7) {3V3};
 	\node (GNDESP) at (2,6) [pin]{} +(1,.5);
 	\node at (2,7) {GND};
-	\node (D4) at (4,6) [pin] {} +(1,.5);	
-	\node at (4,7) {D4};
-	\node (D5) at (6,6) [pin] {} +(1,.5);
-	\node at (6,7) {D5};
-	\node (D18) at (7,6) [pin] {} +(1,.5);
-	\node at (7,7) {D18};
-	\node (D19) at (8,6) [pin] {} +(1,.5);
-	\node at (8,7) {D19};
-
+	\node (D4) at (5,6) [pin] {} +(1,.5);	
+	\node at (5,7) {D4};
+	\node (D5) at (9,6) [pin] {} +(1,.5);
+	\node at (9,7) {D5};
+	\node (D18) at (10,6) [pin] {} +(1,.5);
+	\node at (10,7) {D18};
+	\node (D19) at (11,6) [pin] {} +(1,.5);
+	\node at (11,7) {D19};
+	\node (VP) at (14,9) [pin] {} +(1,.5);
+	\node at (14,8) {VP};
 
 	% Body of the TB6612
 	\node at (10.5,0) [rectangle, thick, draw, minimum width=11cm, minimum height=5cm]  {};
@@ -68,8 +69,33 @@
 	\node (MOTORB1) at (12,-2) [pin] {} +(1,.5);	
 	\node (MOTORB2) at (13,-2) [pin] {} +(1,.5);	
 	\node at (12.5,-1) {MOTORB};
+	
+	% Motors - Gives compile error when I try to make motors regular nodes
+	\draw (8,-4) node[elmech](motor) {M};
+	\draw (MOTORA1.south) to (motor.north);
+	\draw (motor.south)  -- ++(0,-0.5) --  ++(1,0) -- (MOTORA2.south);
+	
+	%\draw (12,-5) node[elmech](motor) {Right};
+	%\draw (MOTORB1.south) to (motor.north);
+	%\draw (motor.south)  -- ++(0,-1) --  ++(1,0) -- (MOTORB2.south);
+	
+	
 
+	% ESP connections
 	\draw (GNDESP.south) -- ++(0,-10) -- ++ (0,-1) node(GROUND)[ground]{};
+
+	% TB6612 connections
+	\draw (D4.south)  to[short] (AIN1.north);
+	\draw (D5.south)  to[short] (AIN2.north);	
+	\draw (D18.south)  to[short] (BIN1.north);
+	\draw (D19.south)  to[short] (BIN2.north);
+	
+	%\draw (MOTORA1.south)  to[short] (LEFT.top);
+	
+	%\draw (MOTORB1.south)  to[short] (RIGHT.top);
+	
+	
+	
 	
 % draw the button circuits
 %	\draw (VIN.east)  to[short,-*] ++(1,0)

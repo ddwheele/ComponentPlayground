@@ -50,7 +50,7 @@ void loop() {
   }
   //===============================================
 
-  // Uncomment for code to simply run motors forward and backward
+//  // Uncomment for code to simply run motors forward and backward
 //  Serial.println("forward");
 //  digitalWrite(Ain1Pin, HIGH);
 //  digitalWrite(Ain2Pin, LOW);

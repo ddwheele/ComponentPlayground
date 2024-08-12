@@ -79,8 +79,6 @@
 	%\draw (MOTORB1.south) to (motor.north);
 	%\draw (motor.south)  -- ++(0,-1) --  ++(1,0) -- (MOTORB2.south);
 	
-	
-
 	% ESP connections
 	\draw (GNDESP.south) -- ++(0,-10) -- ++ (0,-1) node(GROUND)[ground]{};
 
@@ -90,12 +88,12 @@
 	\draw (D18.south)  to[short] (BIN1.north);
 	\draw (D19.south)  to[short] (BIN2.north);
 	
-	%\draw (MOTORA1.south)  to[short] (LEFT.top);
+%	vsourceAMshape
+
+	\node (5V) at (18,5) [battery] {5V} ;
 	
-	%\draw (MOTORB1.south)  to[short] (RIGHT.top);
-	
-	
-	
+%	\draw (VM.north) -- ++(0,1) -- ++(3,0)   to[battery, v=$5V$] ++(0,2) ;
+
 	
 % draw the button circuits
 %	\draw (VIN.east)  to[short,-*] ++(1,0)

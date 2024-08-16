@@ -1,27 +1,12 @@
 Motor Test:
 
 Use with 
- * brushless DC motor (5V)
  * ESP32
  * Adafruit TB6612 1.2A DC/Stepper Motor Driver Breakout Board
+ * 2x brushless DC motor (5V)
+ * 5V battery pack
+ * push button
+
+The motors are connected to the motor controller. The button is connected to the ESP. When the program starts, the motors both run forward. When the button is pushed and held, the motors run backward.
  
-Connect:
-* ESP 3V3 - Power (3V)
-* ESP GND - Ground
-* ESP D4 - TB6612 AIN1
-* ESP D5 - TB6612 AIN2
-* ESP D18 - TB6612 BIN1
-* ESP D19 - TB6612 BIN2
-* ESP VP (GPIO36) - Button high
-* Power (3V) - Button high
-* Button low - 10K Ohm - Ground
-
-* TB6612 VM - Power (later 5V) 
-* TB6612 PWMA - Power (3V)
-* TB6612 PWMB - Power (3V)
-* TB6612 STBY - Power (3V)
-* TB6612 GND - Ground 
-* TB6612 MOT A - Motor Positive
-* TB6612 MOT A - Motor Negative 
-
-
+ <img src="./Diagram.svg">

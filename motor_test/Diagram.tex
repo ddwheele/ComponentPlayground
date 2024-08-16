@@ -11,8 +11,8 @@
 
 	% Draw a grid
 	%\clip(0,-10) rectangle (15,10);
-	\draw[step=1cm,gray,ultra thin] (0,-10) grid (20,10);
-	\draw (0,0) circle [radius=10pt];
+	%\draw[step=1cm,gray,ultra thin] (0,-10) grid (20,10);
+	%\draw (0,0) circle [radius=10pt];
 		
 	% Body of the ESP32
 	\node at (8,7.5) [rectangle, thick, draw, minimum width=16cm, minimum height=4cm]  {};
@@ -70,17 +70,18 @@
 	\node (MOTORB2) at (13,-2) [pin] {} +(1,.5);	
 	\node at (12.5,-1) {MOTORB};
 	
-	% Motors - Gives compile error when I try to make motors regular nodes
-	\draw (8,-4) node[elmech](motor) {M};
+	% Motors 
+	\draw (8,-4) node[elmech](motor) {L};
 	\draw (MOTORA1.south) to (motor.north);
 	\draw (motor.south)  -- ++(0,-1) --  ++(1,0) -- (MOTORA2.south);
 	
-	%\draw (12,-5) node[elmech](motor) {Right};
-	%\draw (MOTORB1.south) to (motor.north);
-	%\draw (motor.south)  -- ++(0,-1) --  ++(1,0) -- (MOTORB2.south);
+	\draw (12,-4) node[elmech](motor) {R};
+	\draw (MOTORB1.south) to (motor.north);
+	\draw (motor.south)  -- ++(0,-1) --  ++(1,0) -- (MOTORB2.south);
 	
-	% ESP connections
+	% Grounds
 	\draw (GNDESP.south) -- ++(0,-1) -- ++ (0,0.5) node(GROUND)[ground]{};
+	\draw (GNDTB_BOT1.south) -- ++(0,-1) -- ++ (0,0.5) node(GROUND)[ground]{};
 
 	% TB6612 connections
 	\draw (D4.south)  -- ++(0,-1.5) --  ++(3,0) to[short] (AIN1.north);
@@ -96,32 +97,12 @@
 		to[normally open push button, draw, color=black]  ++(1,0) ;
 	
 	\draw(15,2.5) -- ++(0,2)  to[battery, v=$5V$] ++(-2,0)  -- ++(0,-2) ;
-%	\draw (VM.north) -- ++(0,1)   to[battery,v=$5V$] -- (GNDTB_TOP.north)  ;
 
-	\draw (VP.north) -- ++(0,1)   to[R=10<\kilo \ohm>,-] ++(5,0)
-	  -- ++(0,-1) node(GROUND)[ground]{}; 
+	\draw (VP.north) -- ++(0,1) 
+		to[R=10<\kilo \ohm>,-] ++(5,0) -- ++(0,-1) node(GROUND)[ground]{}; 
 	  
 	  \draw (VP.north) -- ++(0,1) -- ++(-2,0); 
-	  
-%		to[normally open push button, draw] ++(0,-6);
-%		to[short]  +(0, -1)
-%		to[short]  (D25.east);  
-%	 \draw (3.5,0)  to[R=10<\kilo \ohm>,*-*] +(9,0); 
-	  
-%	\draw (VIN.east)  to[short] ++(2,0)
-%		to[normally open push button, draw, color=green] ++(0,-6)
-%		to[short]  +(0, -3)
-%		to[short]  (D32.east);  
-%	 \draw (4.5,-2)  to[R=10<\kilo \ohm>,*-*] +(8,0); 
 
-% draw the LED circuits
-%	\draw (D26.east)  to[leDo, color=red] ++(8,0) 
-%		   to [R=\SI{220}{\ohm}]   ++(1,0)
-%		   	  to[short, -*]  ++(1,0);
-		 
-%	\draw (D33.east)  to[leDo, color=green] ++(8,0) 
-%		   to [R=\SI{220}{\ohm}]   ++(1,0)
-%		  to[short, -*]  ++(1,0);
 
 \end{circuitikz}
 

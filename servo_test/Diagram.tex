@@ -32,8 +32,8 @@
 	\node at (2,7) {GND};
 	\node (D4) at (5,6) [pin] {} +(1,.5);	
 	\node at (5,7) {D4};
-	\node (D5) at (9,6) [pin] {} +(1,.5);
-	\node at (9,7) {D5};
+	%\node (D5) at (9,6) [pin] {} +(1,.5);
+	%\node at (9,7) {D5};
 	\node (D18) at (10,6) [pin] {} +(1,.5);
 	\node at (10,7) {D18};
 	%\node (D19) at (11,6) [pin] {} +(1,.5);
@@ -54,12 +54,12 @@
 	\node at (8,1) {AIN1};
 	\node (STBY) at (9,2) [pin] {} +(1,.5);
 	\node at (9,1) {STBY};	
-	\node (BIN1) at (10,2) [pin] {} +(1,.5);	
-	\node at (10,1) {BIN1};
-	\node (BIN2) at (11,2) [pin] {} +(1,.5);	
-	\node at (11,1) {BIN2};
-	\node (PWMB) at (12,2) [pin] {} +(1,.5);
-	\node at (12,0.5) {PWMB};
+	%\node (BIN1) at (10,2) [pin] {} +(1,.5);	
+	%\node at (10,1) {BIN1};
+	%\node (BIN2) at (11,2) [pin] {} +(1,.5);	
+	%\node at (11,1) {BIN2};
+	%\node (PWMB) at (12,2) [pin] {} +(1,.5);
+	%\node at (12,0.5) {PWMB};
 	\node (GNDTB_TOP) at (13,2) [pin] {} +(1,.5);
 	\node at (13,1) {GND};
 	\node (VCC) at (14,2) [pin] {} +(1,.5);	
@@ -79,7 +79,7 @@
 	
 	% Servo
 	\tikzset{flipflop myJK/.style={flipflop,
- 		flipflop def={t1=GND, t2=P, t3=S}}
+ 		flipflop def={t1=GND, t2=P, t3=Srv}}
 	}
 	\draw (13,-5) node[flipflop myJK](servo) {S};
 	\draw (MOTORA1.south)  -- ++(0,-3.5)  to (servo.pin 3);
@@ -88,13 +88,14 @@
 	% Grounds
 	\draw (GNDESP.south) -- ++(0,-0.5) -- ++ (0,0.5) node(GROUND)[ground]{};
 	\draw (GNDTB_BOT1.south) -- ++(0,-1.5) to (servo.pin 1);
-
+	\draw  (AIN2.north) -- ++ (0,1.5) -- ++ (-1,0) node(GROUND)[ground]{};
+	
 	% TB6612 connections
-	\draw (D4.south)  -- ++(0,-2.5) --  ++(3,0) to[short] (AIN1.north);
-	\draw (D5.south)  -- ++(0,-0.5) --  ++(-2,0) to[short] (AIN2.north);	
+	\draw (D4.south)  -- ++(0,-2.5) --  ++(1,0) to[short] (PWMA.north);
+
 	
 	% 3V3 Power connections
-	\draw[red] (3V3.south)  -- ++(0,-1) --  ++(5,0) -- (PWMA.north);
+	\draw[red] (3V3.south)  -- ++(0,-1) --  ++(7,0) -- (AIN1.north);
 	\draw[red] (3V3.south)  -- ++(0,-1) --  ++(8,0) -- (STBY.north);
 	
 	% 5V Power connection

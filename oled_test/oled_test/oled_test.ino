@@ -1,10 +1,16 @@
+#include <SPI.h>
+#include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
-#include <Wire.h>
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
 
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+#define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+#define NUMFLAKES     10 // Number of snowflakes in the animation example
 
 #define LOGO_HEIGHT   16
 #define LOGO_WIDTH    16
@@ -26,35 +32,160 @@ static const unsigned char PROGMEM logo_bmp[] =
   0b01110000, 0b01110000,
   0b00000000, 0b00110000 };
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 void setup() {
   Serial.begin(115200);
-  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) 
-  { 
+
+  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+  if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
-    for(;;);
+    for(;;); // Don't proceed, loop forever
   }
+
   // Show initial display buffer contents on the screen --
   // the library initializes this with an Adafruit splash screen.
   display.display();
-  delay(2000);
+  delay(2000); // Pause for 2 seconds
+
+  // Clear the buffer
   display.clearDisplay();
-  display.setTextSize(3);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
-  // Display static text
-  display.println("Hello World!");
-  display.display(); 
-  delay(100);
+
+  // Draw a single pixel in white
+  display.drawPixel(10, 10, SSD1306_WHITE);
+
+  // Show the display buffer on the screen. You MUST call display() after
+  // drawing commands to make them visible on screen!
+  display.display();
+  delay(2000);
+  // display.display() is NOT necessary after every single drawing command,
+  // unless that's what you want...rather, you can batch up a bunch of
+  // drawing operations and then update the screen all at once by calling
+  // display.display(). These examples demonstrate both approaches...
+ 
+//  // Invert and restore display, pausing in-between
+//  display.invertDisplay(true);
+//  delay(1000);
+//  display.invertDisplay(false);
+//  delay(1000);
+//  
+//  testdrawbitmap();    // Draw a small bitmap image
+//  testanimate(logo_bmp, LOGO_WIDTH, LOGO_HEIGHT); // Animate bitmaps
 }
+
 void loop() {
-  // Scroll in various directions, pausing in-between:
-  display.startscrollright(0x00, 0x0F);
-  delay(7000);
-  display.stopscroll();
+    for(int r=22; r<25; r++) {
+      for(int i=0; i<4; i++) {
+       // H, V, Radius, Pupil
+       eyeTest(r+i, r+i, r, 2);
+      }
+    }
+}
+
+/**
+ * eyeHOffset - distance from left of screen across to center of left eye
+ * eyeVOffset - distance from top of screen down to center of both eyes
+ * eyeRadius
+ * pupilRadius
+ */
+void eyeTest(int eyeHOffset, int eyeVOffset, int eyeRadius, int pupilRadius) {
+  int screenCenterX = display.width() / 2;
+  int screenCenterY = display.height() / 2;
+  
+  display.clearDisplay();
+  display.fillCircle(eyeHOffset,
+                     eyeVOffset,
+                     eyeRadius,
+                     SSD1306_WHITE);
+  display.fillCircle(display.width() - eyeHOffset,
+                     eyeVOffset,
+                     eyeRadius,
+                     SSD1306_WHITE);
+
+//  display.fillCircle(eyeHOffset,
+//                     eyeVOffset,
+//                     pupilRadius,
+//                     SSD1306_INVERSE);
+//  display.fillCircle(display.width() - eyeHOffset,
+//                     eyeVOffset,
+//                     pupilRadius,
+//                     SSD1306_INVERSE);
+  display.display();
+  delay(3000);
+
+  reportSizes(eyeHOffset, eyeVOffset, eyeRadius, pupilRadius);
+  delay(200);
+}
+
+void reportSizes(int eyeHOffset, int eyeVOffset, int eyeRadius, int pupilRadius) {
+  display.clearDisplay();
+  display.setCursor(0, 0);     // Start at top-left corner
+  display.setTextSize(2);             
+  display.setTextColor(SSD1306_WHITE);
+  display.print(F("H=")); 
+  display.print(eyeHOffset); 
+  display.print(F(", V=")); 
+  display.println(eyeVOffset); 
+  
+  display.print(F("R=")); 
+  display.print(eyeRadius); 
+  display.print(F(", P=")); 
+  display.println(pupilRadius); 
+
+  display.display();
+  delay(2000);
+}
+
+void testdrawbitmap(void) {
+  display.clearDisplay();
+
+  display.drawBitmap(
+    (display.width()  - LOGO_WIDTH ) / 2,
+    (display.height() - LOGO_HEIGHT) / 2,
+    logo_bmp, LOGO_WIDTH, LOGO_HEIGHT, 1);
+  display.display();
   delay(1000);
-  display.startscrollleft(0x00, 0x0F);
-  delay(7000);
-  display.stopscroll();
-  delay(1000);
+}
+
+#define XPOS   0 // Indexes into the 'icons' array in function below
+#define YPOS   1
+#define DELTAY 2
+
+void testanimate(const uint8_t *bitmap, uint8_t w, uint8_t h) {
+  int8_t f, icons[NUMFLAKES][3];
+
+  // Initialize 'snowflake' positions
+  for(f=0; f< NUMFLAKES; f++) {
+    icons[f][XPOS]   = random(1 - LOGO_WIDTH, display.width());
+    icons[f][YPOS]   = -LOGO_HEIGHT;
+    icons[f][DELTAY] = random(1, 6);
+    Serial.print(F("x: "));
+    Serial.print(icons[f][XPOS], DEC);
+    Serial.print(F(" y: "));
+    Serial.print(icons[f][YPOS], DEC);
+    Serial.print(F(" dy: "));
+    Serial.println(icons[f][DELTAY], DEC);
+  }
+
+  for(;;) { // Loop forever...
+    display.clearDisplay(); // Clear the display buffer
+
+    // Draw each snowflake:
+    for(f=0; f< NUMFLAKES; f++) {
+      display.drawBitmap(icons[f][XPOS], icons[f][YPOS], bitmap, w, h, SSD1306_WHITE);
+    }
+
+    display.display(); // Show the display buffer on the screen
+    delay(200);        // Pause for 1/10 second
+
+    // Then update coordinates of each flake...
+    for(f=0; f< NUMFLAKES; f++) {
+      icons[f][YPOS] += icons[f][DELTAY];
+      // If snowflake is off the bottom of the screen...
+      if (icons[f][YPOS] >= display.height()) {
+        // Reinitialize to a random position, just off the top
+        icons[f][XPOS]   = random(1 - LOGO_WIDTH, display.width());
+        icons[f][YPOS]   = -LOGO_HEIGHT;
+        icons[f][DELTAY] = random(1, 6);
+      }
+    }
+  }
 }

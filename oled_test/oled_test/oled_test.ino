@@ -14,6 +14,10 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define LOGO_HEIGHT   16
 #define LOGO_WIDTH    16
+
+#define EYE_RADIUS 23
+#define EYE_OFFSET 25
+
 static const unsigned char PROGMEM logo_bmp[] =
 { 0b00000000, 0b11000000,
   0b00000001, 0b11000000,
@@ -31,6 +35,12 @@ static const unsigned char PROGMEM logo_bmp[] =
   0b01111100, 0b11110000,
   0b01110000, 0b01110000,
   0b00000000, 0b00110000 };
+
+// Using ESP32, connect to OLED:
+// 3V3 - VCC
+// GND - GND
+// D21 - SDA
+// D22 - SCL
 
 void setup() {
   Serial.begin(115200);
@@ -52,14 +62,8 @@ void setup() {
   // Draw a single pixel in white
   display.drawPixel(10, 10, SSD1306_WHITE);
 
-  // Show the display buffer on the screen. You MUST call display() after
-  // drawing commands to make them visible on screen!
   display.display();
   delay(2000);
-  // display.display() is NOT necessary after every single drawing command,
-  // unless that's what you want...rather, you can batch up a bunch of
-  // drawing operations and then update the screen all at once by calling
-  // display.display(). These examples demonstrate both approaches...
  
 //  // Invert and restore display, pausing in-between
 //  display.invertDisplay(true);
@@ -72,21 +76,67 @@ void setup() {
 }
 
 void loop() {
-    for(int r=22; r<25; r++) {
-      for(int i=0; i<4; i++) {
-       // H, V, Radius, Pupil
-       eyeTest(r+i, r+i, r, 2);
-      }
-    }
+  drawEyes(0,0, 1000);
+  drawEyes(1,0, 2000);
+  display.clearDisplay();
+    delay(200);
+   
+  drawEyes(0,0, 2000);
+  drawEyes(-1,0, 1000);
+
+  drawEyes(0,0, 2000);
+  drawEyes(2,0, 2000);
+  drawEyes(2,-2, 1000);
+  display.clearDisplay();
+  display.display();
+    delay(200);
+  drawEyes(0,0, 2000);
+
+  drawEyes(1,0, 2000);
+    display.clearDisplay();
+    delay(200);
+  drawEyes(-2,0,2000);
+  drawEyes(0,0, 2000);
+  drawEyes(0,-2, 1000);
+
+  drawEyes(0,0, 2000);
+  drawEyes(-2,0, 1000);
+  drawEyes(0,0, 2000);
+   display.clearDisplay();
+  display.display();
+    delay(200);
+  drawEyes(-2,0, 3000);
+}
+
+
+/**
+ * Draw "standard" eyes, moved left and up pixels in those directions
+ * (left and up can be negative)
+ */
+void drawEyes(int left, int up, int hold) {
+  int screenCenterX = display.width() / 2;
+  int screenCenterY = display.height() / 2;
+  
+  display.clearDisplay();
+  display.fillCircle(EYE_OFFSET - left,
+                     EYE_OFFSET - up,
+                     EYE_RADIUS,
+                     SSD1306_WHITE);
+  display.fillCircle(display.width() - EYE_OFFSET - left,
+                     EYE_OFFSET - up,
+                     EYE_RADIUS,
+                     SSD1306_WHITE);
+
+  display.display();
+  delay(hold);
 }
 
 /**
  * eyeHOffset - distance from left of screen across to center of left eye
  * eyeVOffset - distance from top of screen down to center of both eyes
  * eyeRadius
- * pupilRadius
  */
-void eyeTest(int eyeHOffset, int eyeVOffset, int eyeRadius, int pupilRadius) {
+void eyeTest(int eyeHOffset, int eyeVOffset, int eyeRadius) {
   int screenCenterX = display.width() / 2;
   int screenCenterY = display.height() / 2;
   
@@ -100,22 +150,14 @@ void eyeTest(int eyeHOffset, int eyeVOffset, int eyeRadius, int pupilRadius) {
                      eyeRadius,
                      SSD1306_WHITE);
 
-//  display.fillCircle(eyeHOffset,
-//                     eyeVOffset,
-//                     pupilRadius,
-//                     SSD1306_INVERSE);
-//  display.fillCircle(display.width() - eyeHOffset,
-//                     eyeVOffset,
-//                     pupilRadius,
-//                     SSD1306_INVERSE);
   display.display();
   delay(3000);
 
-  reportSizes(eyeHOffset, eyeVOffset, eyeRadius, pupilRadius);
+  reportSizes(eyeHOffset, eyeVOffset, eyeRadius);
   delay(200);
 }
 
-void reportSizes(int eyeHOffset, int eyeVOffset, int eyeRadius, int pupilRadius) {
+void reportSizes(int eyeHOffset, int eyeVOffset, int eyeRadius) {
   display.clearDisplay();
   display.setCursor(0, 0);     // Start at top-left corner
   display.setTextSize(2);             
@@ -126,9 +168,7 @@ void reportSizes(int eyeHOffset, int eyeVOffset, int eyeRadius, int pupilRadius)
   display.println(eyeVOffset); 
   
   display.print(F("R=")); 
-  display.print(eyeRadius); 
-  display.print(F(", P=")); 
-  display.println(pupilRadius); 
+  display.println(eyeRadius);
 
   display.display();
   delay(2000);

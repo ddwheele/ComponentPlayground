@@ -13,10 +13,15 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define LOGO_HEIGHT   16
 #define LOGO_WIDTH    16
 
-#define EYE_RADIUS 15
-#define EYE_X_INSET 5 // side of screen to outside edge of eye
-#define EYE_Y_INSET 5 // top of screen to top edge of eye
-//#define PUPIL_RADIUS 5
+#define EYE_RADIUS          18
+#define EYE_X_INSET         5    // side of screen to outside edge of eye
+#define EYE_Y_INSET         5    // top of screen to top edge of eye
+#define PUPIL_RADIUS        16
+#define HILITE_RADIUS   2
+#define HILITE_OFFSET_X 6
+#define HILITE_OFFSET_Y 6
+
+#define LID_MULTIPLIER 4 // how much bigger "eyelid" is than eye
 
 #define MOUTH_RADIUS 15
 #define MOUTH_OFFSET 6 // Bottom of screen to bottom of smile
@@ -48,12 +53,16 @@ void setup() {
 }
 
 void loop() {
+
+    blinkEyes(0,0);
   drawFace(0,0, 1000);
-  drawFace(1,0, 2000);
+    blinkEyes(0,0);
+  drawFace(-1,0, 2000);
   
-  blinkEyes(1,0);
+  blinkEyes(-1,0);
   
   drawFace(0,0, 2000);
+    blinkEyes(0,0);
   drawFace(-1,0, 1000);
   drawFace(0,0, 2000);
   drawFace(2,0, 2000);
@@ -72,10 +81,20 @@ void loop() {
   drawFace(0,0, 2000);
   drawFace(-2,0, 1000);
  
-  blinkEyes(1,0);
+  blinkEyes(-1,0);
 
   drawFace(0,0, 2000);
   drawFace(-2,0, 3000);
+}
+
+void drawFace(int left, int up, int hold) {
+  display.clearDisplay();
+  drawMouth();
+  drawEyes(left, up);
+
+  //display.invertDisplay(true);
+  display.display();
+  delay(hold);
 }
 
 void blinkEyes(int left, int up) {
@@ -94,36 +113,35 @@ void drawBlinkStep(int left, int up, int percentClosed, int hold) {
   int leftEyeCenterX = calcLeftEyeCenterX(left, up);
   int rightEyeCenterX = calcRightEyeCenterX(left, up);
   int eyeCenterY = calcEyeCenterY(up);
-  
+
+  drawMouth();
   drawEyes(left, up, leftEyeCenterX, rightEyeCenterX, eyeCenterY);
 
-  // Open, the lid is centered at -2R. Closed, centered at 0.
-  int lidCenterY = map(percentClosed, 0, 100, -2*EYE_RADIUS, 0); 
+  int lidCenterY = map(percentClosed, 0, 100,
+                       calcLidCenterOpen(up, eyeCenterY),
+                       calcLidCenterClosed(up, eyeCenterY)); 
   // draw "lid"
   display.fillCircle(leftEyeCenterX,
                      lidCenterY,
-                     EYE_RADIUS*2,
+                     EYE_RADIUS*LID_MULTIPLIER,
                      SSD1306_BLACK);
                      
   display.fillCircle(rightEyeCenterX,
                      lidCenterY,
-                     EYE_RADIUS*2,
+                     EYE_RADIUS*LID_MULTIPLIER,
                      SSD1306_BLACK);
+  
+  //display.invertDisplay(true);
   display.display();
   delay(hold);
 }
 
-void drawFace(int left, int up, int hold) {
-   display.clearDisplay();
-   drawMouth();
-   drawEyes(left, up);
-
-   display.display();
-   delay(hold);
+int calcLidCenterOpen(int up, int eyeCenterY) {
+  return eyeCenterY - EYE_RADIUS - LID_MULTIPLIER * EYE_RADIUS;
 }
 
-int calcMouthBoxY() {
-  return display.height() - (MOUTH_OFFSET+MOUTH_HEIGHT);
+int calcLidCenterClosed(int up, int eyeCenterY) {
+  return eyeCenterY + EYE_RADIUS - LID_MULTIPLIER * EYE_RADIUS;
 }
 
 void drawMouth() {
@@ -131,6 +149,7 @@ void drawMouth() {
   int mouthCenterY = display.height() - MOUTH_OFFSET - MOUTH_RADIUS;
 
   display.drawCircle(screenCenterX, mouthCenterY, MOUTH_RADIUS, SSD1306_WHITE);
+  display.drawCircle(screenCenterX, mouthCenterY, MOUTH_RADIUS-1, SSD1306_WHITE);
   display.fillRect(0,0,
                    display.width(), calcMouthBoxY(),
                    SSD1306_BLACK);
@@ -175,9 +194,18 @@ void drawEyes(int left, int up, int leftEyeCenterX, int rightEyeCenterX, int eye
                      PUPIL_RADIUS,
                      SSD1306_INVERSE);
 #endif
+
+  // draw Highlights
+  display.fillCircle(calcLeftEyeHighlightX(left, up),
+                     calcEyeHighlightY(up),
+                     HILITE_RADIUS,
+                     SSD1306_INVERSE);
+
+  display.fillCircle(calcRightEyeHighlightX(left, up),
+                     calcEyeHighlightY(up),
+                     HILITE_RADIUS,
+                     SSD1306_INVERSE);
 }
-
-
 
 int calcLeftEyeCenterX(int left, int up) {
   return EYE_X_INSET + EYE_RADIUS - left;
@@ -189,4 +217,23 @@ int calcRightEyeCenterX(int left, int up) {
 
 int calcEyeCenterY(int up) {
   return EYE_RADIUS + EYE_Y_INSET - up;
+}
+
+int calcMouthBoxY() {
+  return display.height() - (MOUTH_OFFSET+MOUTH_HEIGHT);
+}
+
+int calcLeftEyeHighlightX(int left, int up) {
+  int eyeCenter = calcLeftEyeCenterX(left, up);
+  return eyeCenter + HILITE_OFFSET_X;
+}
+
+int calcRightEyeHighlightX(int left, int up) {
+  int eyeCenter = calcRightEyeCenterX(left, up);
+  return eyeCenter + HILITE_OFFSET_X;
+}
+
+int calcEyeHighlightY(int up) {
+  int eyeCenter = calcEyeCenterY(up);
+  return eyeCenter - HILITE_OFFSET_Y;
 }

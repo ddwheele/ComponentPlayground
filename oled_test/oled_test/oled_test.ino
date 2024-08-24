@@ -17,24 +17,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define EYE_RADIUS 23
 #define EYE_OFFSET 25
-
-static const unsigned char PROGMEM logo_bmp[] =
-{ 0b00000000, 0b11000000,
-  0b00000001, 0b11000000,
-  0b00000001, 0b11000000,
-  0b00000011, 0b11100000,
-  0b11110011, 0b11100000,
-  0b11111110, 0b11111000,
-  0b01111110, 0b11111111,
-  0b00110011, 0b10011111,
-  0b00011111, 0b11111100,
-  0b00001101, 0b01110000,
-  0b00011011, 0b10100000,
-  0b00111111, 0b11100000,
-  0b00111111, 0b11110000,
-  0b01111100, 0b11110000,
-  0b01110000, 0b01110000,
-  0b00000000, 0b00110000 };
+#define PUPIL_RADIUS 5
 
 // Using ESP32, connect to OLED:
 // 3V3 - VCC
@@ -58,43 +41,24 @@ void setup() {
 
   // Clear the buffer
   display.clearDisplay();
-
-  // Draw a single pixel in white
-  display.drawPixel(10, 10, SSD1306_WHITE);
-
-  display.display();
-  delay(2000);
  
-//  // Invert and restore display, pausing in-between
-//  display.invertDisplay(true);
-//  delay(1000);
-//  display.invertDisplay(false);
-//  delay(1000);
-//  
-//  testdrawbitmap();    // Draw a small bitmap image
-//  testanimate(logo_bmp, LOGO_WIDTH, LOGO_HEIGHT); // Animate bitmaps
 }
 
 void loop() {
   drawEyes(0,0, 1000);
   drawEyes(1,0, 2000);
-  display.clearDisplay();
-    delay(200);
-   
+  blinkEyes(1,0);
   drawEyes(0,0, 2000);
   drawEyes(-1,0, 1000);
 
   drawEyes(0,0, 2000);
   drawEyes(2,0, 2000);
   drawEyes(2,-2, 1000);
-  display.clearDisplay();
-  display.display();
-    delay(200);
+  blinkEyes(2,-2);
   drawEyes(0,0, 2000);
 
   drawEyes(1,0, 2000);
-    display.clearDisplay();
-    delay(200);
+  blinkEyes(1,0);
   drawEyes(-2,0,2000);
   drawEyes(0,0, 2000);
   drawEyes(0,-2, 1000);
@@ -102,12 +66,9 @@ void loop() {
   drawEyes(0,0, 2000);
   drawEyes(-2,0, 1000);
   drawEyes(0,0, 2000);
-   display.clearDisplay();
-  display.display();
-    delay(200);
+  blinkEyes(1,0);
   drawEyes(-2,0, 3000);
 }
-
 
 /**
  * Draw "standard" eyes, moved left and up pixels in those directions
@@ -116,74 +77,95 @@ void loop() {
 void drawEyes(int left, int up, int hold) {
   int screenCenterX = display.width() / 2;
   int screenCenterY = display.height() / 2;
+
+  int leftEyeCenterX = EYE_OFFSET - left;
+  int rightEyeCenterX = display.width() - EYE_OFFSET - left -1;
+  int eyeCenterY = EYE_OFFSET - up;
   
   display.clearDisplay();
-  display.fillCircle(EYE_OFFSET - left,
-                     EYE_OFFSET - up,
+  
+  // draw white
+  display.fillCircle(leftEyeCenterX,
+                     eyeCenterY,
                      EYE_RADIUS,
                      SSD1306_WHITE);
-  display.fillCircle(display.width() - EYE_OFFSET - left,
-                     EYE_OFFSET - up,
+                     
+  display.fillCircle(rightEyeCenterX,
+                     eyeCenterY,
                      EYE_RADIUS,
                      SSD1306_WHITE);
 
+  // draw pupil
+  display.fillCircle(leftEyeCenterX,
+                     eyeCenterY,
+                     PUPIL_RADIUS,
+                     SSD1306_INVERSE);
+                     
+  display.fillCircle(rightEyeCenterX,
+                     eyeCenterY,
+                     PUPIL_RADIUS,
+                     SSD1306_INVERSE);
   display.display();
   delay(hold);
 }
 
-/**
- * eyeHOffset - distance from left of screen across to center of left eye
- * eyeVOffset - distance from top of screen down to center of both eyes
- * eyeRadius
- */
-void eyeTest(int eyeHOffset, int eyeVOffset, int eyeRadius) {
+void blinkEyes(int left, int up) {
+  for(int i=0; i<=100; i+=33) {
+    drawBlinkStep(left, up, i, 10);
+  }
+  for(int i=100; i>0; i-=33) {
+    drawBlinkStep(left, up, i, 10);
+  }
+}
+
+void drawBlinkStep(int left, int up, int percentClosed, int hold) {
   int screenCenterX = display.width() / 2;
   int screenCenterY = display.height() / 2;
+
+  int leftEyeCenterX = EYE_OFFSET - left;
+  int rightEyeCenterX = display.width() - EYE_OFFSET - left -1;
+  int eyeCenterY = EYE_OFFSET - up;
   
   display.clearDisplay();
-  display.fillCircle(eyeHOffset,
-                     eyeVOffset,
-                     eyeRadius,
-                     SSD1306_WHITE);
-  display.fillCircle(display.width() - eyeHOffset,
-                     eyeVOffset,
-                     eyeRadius,
-                     SSD1306_WHITE);
-
-  display.display();
-  delay(3000);
-
-  reportSizes(eyeHOffset, eyeVOffset, eyeRadius);
-  delay(200);
-}
-
-void reportSizes(int eyeHOffset, int eyeVOffset, int eyeRadius) {
-  display.clearDisplay();
-  display.setCursor(0, 0);     // Start at top-left corner
-  display.setTextSize(2);             
-  display.setTextColor(SSD1306_WHITE);
-  display.print(F("H=")); 
-  display.print(eyeHOffset); 
-  display.print(F(", V=")); 
-  display.println(eyeVOffset); 
   
-  display.print(F("R=")); 
-  display.println(eyeRadius);
+  // draw white
+  display.fillCircle(leftEyeCenterX,
+                     eyeCenterY,
+                     EYE_RADIUS,
+                     SSD1306_WHITE);
+                     
+  display.fillCircle(rightEyeCenterX,
+                     eyeCenterY,
+                     EYE_RADIUS,
+                     SSD1306_WHITE);
 
+  // draw pupil
+  display.fillCircle(leftEyeCenterX,
+                     eyeCenterY,
+                     PUPIL_RADIUS,
+                     SSD1306_INVERSE);
+                     
+  display.fillCircle(rightEyeCenterX,
+                     eyeCenterY,
+                     PUPIL_RADIUS,
+                     SSD1306_INVERSE);
+
+  // Open, the lid is centered at -2R. Closed, centered at 0.
+  int lidCenterY = map(percentClosed, 0, 100, -2*EYE_RADIUS, 0); 
+  // draw "lid"
+  display.fillCircle(leftEyeCenterX,
+                     lidCenterY,
+                     EYE_RADIUS*2,
+                     SSD1306_BLACK);
+                     
+  display.fillCircle(rightEyeCenterX,
+                     lidCenterY,
+                     EYE_RADIUS*2,
+                     SSD1306_BLACK);
   display.display();
-  delay(2000);
+  delay(hold);
 }
 
-void testdrawbitmap(void) {
-  display.clearDisplay();
-
-  display.drawBitmap(
-    (display.width()  - LOGO_WIDTH ) / 2,
-    (display.height() - LOGO_HEIGHT) / 2,
-    logo_bmp, LOGO_WIDTH, LOGO_HEIGHT, 1);
-  display.display();
-  delay(1000);
-}
 
 #define XPOS   0 // Indexes into the 'icons' array in function below
 #define YPOS   1

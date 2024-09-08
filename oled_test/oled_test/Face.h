@@ -33,6 +33,8 @@ class Face {
 
   public:
     Face();
+    
+    ~Face();
 
     void initialize();
 

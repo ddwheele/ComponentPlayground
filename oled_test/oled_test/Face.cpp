@@ -2,8 +2,11 @@
 
   
 Face::Face() {
-  // empty constructor
  disp = new Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+}
+
+Face::~Face() {
+  delete disp;
 }
 
 void Face::initialize() {

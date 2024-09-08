@@ -53,35 +53,35 @@ void setup() {
 void loop() {
 
   drawFace(0, 0, 1000);
-  doLaugh();
+ // doLaugh();
 
-  // drawFace(-1,0, 2000);
-  //  blinkEyes(-1,0);
+   drawFace(-1,0, 2000);
+    blinkEyes(-1,0);
 
-  //  drawFace(0,0, 2000);
-  //
-  //  drawFace(-1,0, 1000);
-  //  drawFace(0,0, 2000);
-  //  drawFace(2,0, 2000);
-  //  drawFace(2,-2, 1000);
-  //
-  //  blinkEyes(2,-2);
-  //
-  //  drawFace(0,0, 2000);
-  //  drawFace(1,0, 2000);
-  //
-  //  blinkEyes(1,0);
-  //
-  //  drawFace(-2,0,2000);
-  //  drawFace(0,0, 2000);
-  //  drawFace(0,-2, 1000);
-  //  drawFace(0,0, 2000);
-  //  drawFace(-2,0, 1000);
-  //
-  //  blinkEyes(-1,0);
-  //
-  //  drawFace(0,0, 2000);
-  //  drawFace(-2,0, 3000);
+    drawFace(0,0, 2000);
+  
+    drawFace(-1,0, 1000);
+    drawFace(0,0, 2000);
+    drawFace(2,0, 2000);
+    drawFace(2,-2, 1000);
+  
+    blinkEyes(2,-2);
+  
+    drawFace(0,0, 2000);
+    drawFace(1,0, 2000);
+  
+    blinkEyes(1,0);
+  
+    drawFace(-2,0,2000);
+    drawFace(0,0, 2000);
+    drawFace(0,-2, 1000);
+    drawFace(0,0, 2000);
+    drawFace(-2,0, 1000);
+  
+    blinkEyes(-1,0);
+  
+    drawFace(0,0, 2000);
+    drawFace(-2,0, 3000);
 }
 
 void drawFace(int left, int up, int hold) {
@@ -192,7 +192,7 @@ void drawLaughingMouth() {
   // erase top part
   display.fillRect(0, 0,
                    display.width(), calcTopOfMouth() - MOUTH_HEIGHT,
-                   SSD1306_INVERSE);
+                   SSD1306_BLACK);
 }
 
 void drawOooMouth() {

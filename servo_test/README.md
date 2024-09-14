@@ -1,7 +1,7 @@
 Servo Test
 
 Use with 
- * ESP32
+ * Bluefruit Feather 32u4
  * Adafruit TB6612 1.2A DC/Stepper Motor Driver Breakout Board
  * HS-311 Servo (HiTEC Standard)
  * 5V battery pack
